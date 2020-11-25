@@ -1,4 +1,5 @@
 import java.io.*;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,6 +11,9 @@ public class Order {
     static char t;
     public int time;
     public Date deliveryTime = new Date (System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(this.time));
+
+
+
     public int getTime() {
         return time;
     }
@@ -28,13 +32,7 @@ public class Order {
     private Menu menu = new Menu();
 
 
-    public void addOrder() {
-
-        orders.add(Main.mariosSystem.activeOrders.get(j));
-        j = j + 1;
-    }
-
-    public void selectPizza() throws SQLException, ClassNotFoundException {
+    public void selectPizza()  {
 
         boolean finished = false;
         while (!finished) {
@@ -44,49 +42,7 @@ public class Order {
         }
     }
 
-    public static void removeOrder() {
-        ArrayList<String> content = new ArrayList<>();
-
-        BufferedReader reader = null;
-        System.out.println("Enter OrderID:");
-
-        try {
-            Scanner scan2 = new Scanner("orderList.txt");
-            Scanner scan = new Scanner(System.in);
-            reader = new BufferedReader(new FileReader("orderList.txt"));
-
-            String curLine;
-            String temp = String.format("%05d",scan.nextInt());
-
-            while((curLine = reader.readLine()) !=null) {
-                //System.out.println(curLine); - virker
-                if (!curLine.contains(temp)) {
-                    System.out.println(curLine);
-                    content.add(curLine);
-                }
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        updateFileContent(content);
-       // Statistik.sortOrder();
-    }
-
-    private static void updateFileContent(ArrayList<String> content) {
-        try {
-            writer = new BufferedWriter(new FileWriter("orderList.txt"));
-            for (String s: content) {
-                writer.write(s);
-                writer.newLine();
-            }
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addPizza() throws SQLException, ClassNotFoundException {
+    public void addPizza() {
 
         //Main.mariosSystem.activeOrders.add(String.valueOf(Menu.getMenu().get(i-1)));
 
@@ -96,7 +52,7 @@ public class Order {
         System.out.println("Do u want more? (Y/N)");
     }
 
-    public void addAnotherPizza() throws SQLException {
+    public void addAnotherPizza()  {
         menu.showMenu();
         System.out.println("What's next?");
     }
@@ -125,21 +81,18 @@ public class Order {
         Order.j = j;
     }
 
-    public void switchOptions() throws SQLException, ClassNotFoundException {
+    public void switchOptions() {
         addPizza();
-        //addOrder();
         Main.buyMore = input.nextLine().charAt(0);
         if (Main.buyMore == 'Y' || Main.buyMore == 'y') {
             addAnotherPizza();
         } else {
             pickUp();
-          //  Statistik.addToOrder();
             System.out.println("You need to pay:");
             getTotalPrice();
             MarioJDBC marioJDBC = new MarioJDBC();
             marioJDBC.saveOrderToDatabase(this);
             orderID++;
-            //Statistik.addToFile();
             Main.options();
         }
     }
@@ -150,8 +103,11 @@ public class Order {
         for(Pizza p : pizzas)
         {
             totalPrice += p.getPrice();
+
         }
+        System.out.println(totalPrice);
         return totalPrice;
+
     }
 
     public void orderIDString() {

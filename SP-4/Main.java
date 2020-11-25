@@ -20,7 +20,7 @@ public class Main {
 
     }
 
-    public static void options() throws SQLException, ClassNotFoundException {
+    public static void options() {
         System.out.println(mariosSystem.step1.get(0));
         System.out.println(mariosSystem.step1.get(1));
         System.out.println(mariosSystem.step1.get(3));
@@ -31,25 +31,25 @@ public class Main {
             switch (choice){
                 case"1":
                     menu.showMenu();
-                    //System.out.println(menu);
                     options();
                     break;
                 case"2":
                     order = new Order();
                     order.orderIDString();
                     menu.showMenu();
-                    //System.out.println(menu);
                     System.out.println(mariosSystem.step1.get(2));
                     order.selectPizza();
                     break;
                 case "3":
-                   // Statistik.readSortedOrderList();
+
                     options();
                     break;
                 case "4":
-                  //  Statistik.readOrderList();
-                    Order.removeOrder();
+                    MarioJDBC marioJDBC = new MarioJDBC();
+                    marioJDBC.removeFromDatabase(1);
+                    System.out.println("succesfully removed order");
                     options();
+
             }
         }
     }
